@@ -1,37 +1,39 @@
-import { Link } from "lucide-react";
-import { Stats } from "@/components/stats";
-import { UrlList } from "@/components/url-list";
-import { UrlShortener } from "@/components/url-shortener";
+import { getServerSession } from "next-auth/next";
+import { Header } from "@/components/header";
+import { Hero } from "@/components/hero";
+import { PublicStats } from "@/components/public-stats";
+import { AdvancedUrlShortener } from "@/components/url-shortener-advanced";
 
-export default function Home() {
+export default async function HomePage() {
+  const session = await getServerSession();
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <div className="container mx-auto px-4 py-8">
-        <header className="text-center mb-12">
-          <div className="flex items-center justify-center mb-4">
-            <div className="p-3 bg-blue-600 rounded-full mr-4">
-              <Link className="h-8 w-8 text-white" />
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              URL Shortener
-            </h1>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+      <Header />
+      <main className="container mx-auto px-4 py-12 space-y-16">
+        <Hero />
+        <PublicStats />
+
+        <div className="max-w-4xl mx-auto">
+          <AdvancedUrlShortener />
+        </div>
+
+        {!session && (
+          <div className="text-center py-12">
+            <h2 className="text-2xl font-bold mb-4">Want More Features?</h2>
+            <p className="text-muted-foreground mb-6">
+              Sign in to get advanced analytics, custom domains, and link
+              management
+            </p>
+            <a
+              href="/auth/signin"
+              className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-primary/90 transition-colors"
+            >
+              Sign In to Get Started
+            </a>
           </div>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Create custom short links or generate random ones. Fast, secure, and
-            reliable URL shortening service.
-          </p>
-        </header>
-
-        <Stats />
-
-        <div className="max-w-4xl mx-auto mb-12">
-          <UrlShortener />
-        </div>
-
-        <div className="max-w-6xl mx-auto">
-          <UrlList />
-        </div>
-      </div>
+        )}
+      </main>
     </div>
   );
 }

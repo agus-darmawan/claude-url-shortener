@@ -1,11 +1,13 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
+import { AuthProvider } from "@/components/auth/auth-provider";
+import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
-  title: "URL Shortener - Create Short Links",
+  title: "URL Shortener Pro - Advanced Link Management",
   description:
-    "Create custom short links or generate random ones. Fast, secure, and reliable URL shortening service.",
+    "Professional URL shortener with analytics, QR codes, and advanced link management features.",
 };
 
 export default function RootLayout({
@@ -14,19 +16,30 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 3000,
-            style: {
-              background: "#363636",
-              color: "#fff",
-            },
-          }}
-        />
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 3000,
+                className: "",
+                style: {
+                  background: "hsl(var(--card))",
+                  color: "hsl(var(--card-foreground))",
+                  border: "1px solid hsl(var(--border))",
+                },
+              }}
+            />
+            {children}
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
