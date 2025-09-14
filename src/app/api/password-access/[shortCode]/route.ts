@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { verifyPassword } from "@/lib/password";
 import prisma from "@/lib/prisma";
-import { passwordAccessSchema } from "@/lib/validations";
+import { passwordAccessSchema } from "@/lib/validation";
 
 export async function POST(
   request: NextRequest,
@@ -15,7 +15,7 @@ export async function POST(
     const validation = passwordAccessSchema.safeParse(body);
     if (!validation.success) {
       return NextResponse.json(
-        { message: validation.error.errors[0].message },
+        { message: validation.error.issues[0].message },
         { status: 400 },
       );
     }

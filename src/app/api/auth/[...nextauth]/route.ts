@@ -1,10 +1,12 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import NextAuth from "next-auth";
+import type { Session, User } from "next-auth";
+import NextAuth, { type NextAuthOptions } from "next-auth";
+import type { JWT } from "next-auth/jwt";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import prisma from "@/lib/prisma";
 
-const handler = NextAuth({
+const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
@@ -33,7 +35,14 @@ const handler = NextAuth({
     }),
   ],
   callbacks: {
-    session: async ({ session, token, user }) => {
+    session: async ({
+      session,
+      token,
+    }: {
+      session: Session;
+      token: JWT;
+      user?: User;
+    }) => {
       if (session.user) {
         // Get user data from database to ensure we have id and role
         const dbUser = await prisma.user.findUnique({
@@ -48,7 +57,7 @@ const handler = NextAuth({
       }
       return session;
     },
-    jwt: async ({ user, token }) => {
+    jwt: async ({ user, token }: { user?: User; token: JWT }) => {
       if (user) {
         token.id = user.id;
         token.role = user.role || "USER";
@@ -62,6 +71,8 @@ const handler = NextAuth({
   pages: {
     signIn: "/auth/signin",
   },
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

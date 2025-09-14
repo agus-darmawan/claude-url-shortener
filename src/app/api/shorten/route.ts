@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { hashPassword } from "@/lib/password";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { formatUrl, generateShortCode } from "@/lib/utils";
 import { urlSchema } from "@/lib/validation";
 
